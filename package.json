@@ -1,6 +1,6 @@
 {
   "name": "daily-hacker-news-action",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "GitHub Action to fetch and transform daily hacker news",
   "main": "dist/index.js",
   "scripts": {
