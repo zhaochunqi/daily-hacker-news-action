@@ -1,0 +1,15 @@
+name: "Daily Hacker News"
+description: "Fetch and transform daily hacker news from signalkite"
+inputs:
+  targetDir:
+    description: "Target directory to save the transformed markdown file"
+    required: false
+    default: "."
+  hackerNewsLang:
+    description: "Language of the hacker news content"
+    required: false
+    default: "en"
+runs:
+  using: "node16"
+  main: "dist/index.js"
+  pre-if: "true"

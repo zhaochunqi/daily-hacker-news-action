@@ -1,0 +1,29 @@
+{
+  "name": "daily-hacker-news-action",
+  "version": "1.0.0",
+  "description": "GitHub Action to fetch and transform daily hacker news",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "ncc build --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "pnpm run build && pnpm run package"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "hacker-news"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "@vercel/ncc": "^0.38.3",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "axios": "^1.7.9"
+  }
+}
