@@ -1,0 +1,66 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Get current and previous version
+        id: versions
+        run: |
+          CURRENT_VERSION=$(node -p "JSON.parse(require('fs').readFileSync('./package.json', 'utf8')).version")
+          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          PREVIOUS_VERSION=$(git show HEAD~1:package.json | node -p "JSON.parse(require('fs').readFileSync(0, 'utf-8')).version")
+          echo "previous=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check version change
+        id: version_change
+        run: |
+          CURRENT_MAJOR=$(echo ${{ steps.versions.outputs.current }} | cut -d. -f1)
+          CURRENT_MINOR=$(echo ${{ steps.versions.outputs.current }} | cut -d. -f2)
+          PREVIOUS_MAJOR=$(echo ${{ steps.versions.outputs.previous }} | cut -d. -f1)
+          PREVIOUS_MINOR=$(echo ${{ steps.versions.outputs.previous }} | cut -d. -f2)
+          if [ "$CURRENT_MAJOR" != "$PREVIOUS_MAJOR" ] || [ "$CURRENT_MINOR" != "$PREVIOUS_MINOR" ]; then
+            echo "create_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "create_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        if: steps.version_change.outputs.create_release == 'true'
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: v${{ steps.versions.outputs.current }}
+          name: Release ${{ steps.versions.outputs.current }}
+          draft: false
+          prerelease: false
+          generateReleaseNotes: true

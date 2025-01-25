@@ -1,13 +1,14 @@
 {
   "name": "daily-hacker-news-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub Action to fetch and transform daily hacker news",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
-    "all": "pnpm run build && pnpm run package"
+    "all": "pnpm run build && pnpm run package",
+    "prepare": "husky"
   },
   "keywords": [
     "github",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/node": "^22.10.10",
     "@vercel/ncc": "^0.38.3",
+    "husky": "^9.1.7",
     "typescript": "^5.7.3"
   },
   "dependencies": {
